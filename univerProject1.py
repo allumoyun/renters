@@ -2,55 +2,70 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import importlib
 
 sys.path.append('conf/')
 
-import configures
+import configures # type: ignore
 
 # apt install python3-pip
 # pip install python-telegram-bot==21.6 --break-system-packages
 
 
 import telegram  # type: ignore
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes # type: ignore
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler # type: ignore
 
-TELEGRAM_USER = {
+TELEGRAM_USER = {}
 
-}
+import language_uz
+LANG = language_uz.LANGUAGES
 
-LANGUAGES = {
-    "uz": {
-        "select_role": "Siz mijozmisiz yoki ijarachimisiz?",
-        "client": "Mijoz",
-        "tenant": "Ijarachi"
-    },
-    "ru": {
-        "select_role": "Вы клиент или арендатор?",
-        "client": "Клиент",
-        "tenant": "Арендатор"
-    },
-    "en": {
-        "select_role": "Are you a client or a tenant?",
-        "client": "Client",
-        "tenant": "Tenant"
-    }
-}
 
-# Хранение выбранного языка пользователя
-user_language = {}
 
-# Команда /start для запуска бота с выбором языка
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# Функция, которая вызывается при нажатии на кнопку
+async def button_click(update: telegram.Update, context):
+    query = update.callback_query
+    await query.answer()  # Обязательный метод для Telegram
+    button_name = query.data  # Получаем название кнопки
+    lang_module = importlib.import_module(button_name)  # Импортируем модуль
+    LANG = lang_module.LANGUAGES
+    await query.edit_message_text(LANG['bir_balo'] + f" {button_name}")
+
+
+async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
-            InlineKeyboardButton("O'zbekcha", callback_data='lang_uz'),
-            InlineKeyboardButton("Русский", callback_data='lang_ru'),
-            InlineKeyboardButton("English", callback_data='lang_en')
+            telegram.InlineKeyboardButton(LANG['lang_uz'], callback_data='language_uz'),
+            telegram.InlineKeyboardButton(LANG['lang_ru'], callback_data='language_ru'),
+            telegram.InlineKeyboardButton(LANG['lang_en'], callback_data='language_en')
         ]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Выберите язык:", reply_markup=reply_markup)
+    reply_markup = telegram.InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(LANG['choose_lang'], reply_markup=reply_markup)
 
+
+
+bot = Application.builder().token(configures.RESEARCH_BOT_TOKEN).build()
+bot.add_handler(CommandHandler("start", user_register))
+bot.add_handler(CallbackQueryHandler(button_click))
+
+# bot.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_response))
+bot.run_polling()
+
+
+
+exit()
+
+bot = telegram.Bot(token=configures.RESEARCH_BOT_TOKEN)
+updater = telegram.Updater(bot=bot, update_queue=my_queue)
+
+updater.dispatcher.add_handler(CommandHandler('start', user_register))
+
+
+
+
+exit()
+#########################################################################################################
 # Обработчик для выбора языка
 async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -65,7 +80,7 @@ async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE)
     text = LANGUAGES[lang_code]["select_role"]
     keyboard = [
         [
-            InlineKeyboardButton(LANGUAGES[lang_code]["client"], callback_data='role_client'),
+            telegram.InlineKeyboardButton(LANGUAGES[lang_code]["client"], callback_data='role_client'),
             InlineKeyboardButton(LANGUAGES[lang_code]["tenant"], callback_data='role_tenant')
         ]
     ]
