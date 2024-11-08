@@ -1,0 +1,5 @@
+conf/configures.py
+conf/__pycache__/
+.vscode/
+*.log
+*.sw*
