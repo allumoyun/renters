@@ -1,1 +1,11 @@
-clients = {'7743284860': {'name': 'Ali Bobo', 'lang': 'uz'}, '<built-in function id>': {'name': 'Humoyun Abdullazoda', 'time': '11/09/2024, 14:11:42'}, '774328486': {'name': 'Humoyun Abdullazoda', 'time': '11/09/2024, 14:11:44', 'lang': 'language_uz'}}
+clients = {
+    "2211": {
+        "name": "Ali Bobo",
+        "lang": "uz"
+    },
+    "774328486": {
+        "name": "Humoyun Abdullazoda",
+        "time": "2024-11-10 17:34:47",
+        "lang": "uz"
+    }
+}

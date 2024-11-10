@@ -3,7 +3,7 @@ LANGUAGES = {
     'renter': 'Ijera beruvchi',
     'client': 'Klient',
     'choose_lang': 'Tilni tanlang: ',
-    'bir_balo': 'bu uzbekchasi',
+    'bir_narsa': 'siz uzbekchani tanladingiz',
     'lang_uz': "O'zbekcha",
     'lang_ru': "Русский", 
     'lang_en': "English", 

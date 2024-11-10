@@ -6,19 +6,15 @@ import importlib
 
 sys.path.append('conf/')
 
-import configures # type: ignore
-import telegram_users
+import configures 
+import telegram_users 
 CLIENT = telegram_users.clients
-
 
 # apt install python3-pip
 # pip install python-telegram-bot==21.6 --break-system-packages
 
-
 import telegram  # type: ignore
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler # type: ignore
-
-TELEGRAM_USER = {}
 
 import language_uz
 LANG = language_uz.LANGUAGES
@@ -36,17 +32,18 @@ async def button_click(update: telegram.Update, context):
     button_name = query.data  # Получаем название кнопки
     lang_module = importlib.import_module(button_name)  # Импортируем модуль
     LANG = lang_module.LANGUAGES
-    CLIENT[str(id)] = {"name": name, "time": time.strftime("%m/%d/%Y, %H:%M:%S"), "lang": button_name}
-    with open("conf/telegram_users.py", "w", encoding="utf-8") as file: file.write('clients = ' + str(CLIENT))
-    #    file.write('clients = ' + json.dump(CLIENT, file, ensure_ascii=False, indent=4))
-    await query.edit_message_text(LANG['bir_balo'] + f" {button_name}" + str(CLIENT))
+    CLIENT[str(id)] = {"name": name, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "lang": button_name[9:]}
+    with open("conf/telegram_users.py", "w", encoding="utf-8") as file: file.write('clients = ' + json.dumps(CLIENT, indent=4))
+    await query.edit_message_text(LANG['bir_narsa'] + f" {button_name}")
 
 
 async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
     name = '%s %s' % (update.message.from_user.first_name, update.message.from_user.last_name)
-    if CLIENT.get(str(id)): pass      # eski user, tanidim ??????????
+    buttons = None
+    if CLIENT.get(str(update.message.from_user.id)):       # eski user, tanidim ??????????
+        msg = name
     else: 
-        CLIENT[str(id)] = {'name': name, 'time': time.strftime("%m/%d/%Y, %H:%M:%S")}
+        # CLIENT[str(id)] = {'name': name, 'time': time.strftime("%d/%m/%Y, %H:%M:%S")}
         keyboard = [
             [
                 telegram.InlineKeyboardButton(LANG['lang_uz'], callback_data='language_uz'),
@@ -56,7 +53,7 @@ async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_T
         ]
         buttons = telegram.InlineKeyboardMarkup(keyboard)
         msg = name + ', ' + LANG['choose_lang']
-        await update.message.reply_text(msg, reply_markup=buttons)
+    await update.message.reply_text(msg, reply_markup=buttons)
 
 
 
