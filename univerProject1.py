@@ -34,14 +34,15 @@ async def button_click(update: telegram.Update, context):
     LANG = lang_module.LANGUAGES
     CLIENT[str(id)] = {"name": name, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "lang": button_name[9:]}
     with open("conf/telegram_users.py", "w", encoding="utf-8") as file: file.write('clients = ' + json.dumps(CLIENT, indent=4))
-    await query.edit_message_text(LANG['bir_narsa'] + f" {button_name}")
+    await choose_action(query, context)
+    # await query.edit_message_text(LANG['bir_narsa'] + f" {button_name}")
 
 
 async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    # START 
     name = '%s %s' % (update.message.from_user.first_name, update.message.from_user.last_name)
-    buttons = None
     if CLIENT.get(str(update.message.from_user.id)):       # eski user, tanidim ??????????
-        msg = name
+        await choose_action(update, context)
     else: 
         # CLIENT[str(id)] = {'name': name, 'time': time.strftime("%d/%m/%Y, %H:%M:%S")}
         keyboard = [
@@ -53,9 +54,40 @@ async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_T
         ]
         buttons = telegram.InlineKeyboardMarkup(keyboard)
         msg = name + ', ' + LANG['choose_lang']
-    await update.message.reply_text(msg, reply_markup=buttons)
+        await update.message.reply_text(msg, reply_markup=buttons)
 
 
+async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [
+            telegram.InlineKeyboardButton(LANG['client'], callback_data='client'),
+            telegram.InlineKeyboardButton(LANG['renter'], callback_data='renter')
+        ]
+    ]
+    buttons = telegram.InlineKeyboardMarkup(keyboard)
+    msg = LANG['bir_narsa']
+    try:
+        await update.message.reply_text(msg, reply_markup=buttons)
+    except:
+        await update.edit_message_text(msg, reply_markup=buttons)
+
+
+# Обработчик для получения ответа от кнопок
+async def handle_response(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    user_response = update.message.text
+    id = str(update.message.from_user.id)
+    lang = CLIENT.get(id, {}).get("lang", "ru")
+
+    if user_response == language_uz.LANGUAGES[LANG]["client"]:
+        response_text = "Вы выбрали: Клиент"
+    elif user_response == language_uz.LANGUAGES[LANG]["renter"]:
+        response_text = "Вы выбрали: Арендатор"
+    else:
+        response_text = "Выберите корректный вариант: Клиент или Арендатор."
+
+    await update.message.reply_text(response_text)
+
+# Основная функция для запуска бота
 
 bot = Application.builder().token(configures.RESEARCH_BOT_TOKEN).build()
 bot.add_handler(CommandHandler("start", user_register))
@@ -63,4 +95,8 @@ bot.add_handler(CallbackQueryHandler(button_click))
 
 # bot.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, button_response))
 bot.run_polling()
+
+
+
+
 
