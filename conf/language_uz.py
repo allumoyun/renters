@@ -4,8 +4,9 @@ LANGUAGES = {
     'client': 'Klient',
     'choose_lang': 'Tilni tanlang: ',
     'bir_narsa': 'siz uzbekchani tanladingiz',
-    'lang_uz': "O'zbekcha",
-    'lang_ru': "Русский", 
-    'lang_en': "English", 
-    'unknown_user': 'Hurmatli foydalanuvchi'
+    'lang_uz': "🇺🇿 O'zbekcha",
+    'lang_ru': "🇷🇺 Русский", 
+    'lang_en': "🇬🇧 English", 
+    'unknown_user': 'Hurmatli foydalanuvchi',
+    'for_search': 'Izlash uchun manzil kiriting: '
 }
