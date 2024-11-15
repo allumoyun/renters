@@ -8,5 +8,7 @@ LANGUAGES = {
     'lang_ru': "🇷🇺 Русский", 
     'lang_en': "🇬🇧 English", 
     'unknown_user': 'Hurmatli foydalanuvchi',
-    'for_search': 'Izlash uchun manzil kiriting: '
+    'for_search': 'Izlash uchun manzil kiriting: ',
+    'enter_address': 'Uy manzilini kiriting: ',
+    'location': 'Uy joylashuvini yuboring'
 }

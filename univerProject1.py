@@ -35,7 +35,7 @@ async def button_click(update: telegram.Update, context):
     if button_name == 'button_client': 
         await button_client(query, context)
     elif button_name == 'button_renter':
-        pass
+        await button_renter(query, context)
     else:
         lang_module = importlib.import_module(button_name)  # Импортируем модуль
         LANG = lang_module.LANGUAGES
@@ -65,9 +65,9 @@ async def user_register(update: telegram.Update, context: ContextTypes.DEFAULT_T
 
 async def show_message(update, msg, btn=None):
     try:
-        await update.message.reply_text(msg, reply_markup=btn)
-    except:
         await update.edit_message_text(msg, reply_markup=btn)
+    except:
+        await update.message.reply_text(msg, reply_markup=btn)
 
 
 async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
@@ -84,8 +84,17 @@ async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_T
 
 async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
 
-    msg = LANG['for_search']
-    await show_message(update, msg)
+    msg01 = LANG['for_search']
+    await show_message(update, msg01)
+
+
+async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    try: id = str(query.from_user.id)
+    except: id = str(query.message.from_user.id)
+    if not NOTICE.get(id): NOTICE[id] = {}
+    NOTICE[id]['question'] = 'address'
+    print('BUTTON RENTER: ', NOTICE)
+    await show_message(query, LANG['enter_address'])
 
 # Обработчик для получения ответа от кнопок
 
@@ -103,82 +112,21 @@ async def handle_response(update: telegram.Update, context: ContextTypes.DEFAULT
 
     await update.message.reply_text(response_text)
 
-async def user_message(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = update.message.text if update.message.text else "Сообщение содержит не текст."  
-    response = f"Вы отправили сообщение: {msg}"
-    await update.message.reply_text(response)
+async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    try: id = str(query.from_user.id)
+    except: id = str(query.message.from_user.id)
+    print('MESSAGE: ', NOTICE)
+    if NOTICE.get(id) and NOTICE[id].get('question', '') == 'address':
+        if query.message.text: 
+            msg = 'Rahmat, address uchun'
+            await show_message(query, msg)
+        else:
+            await button_renter(query, context) 
 
 
-'''
-PHOTO, PHONE, LOCATION, PRICE = range(4)
 
-async def start_renter_conversation(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Пожалуйста, отправьте фото дома.")
-    return PHOTO
 
-# Обработка фото
-async def ask_phone(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    # Сохраняем фото
-    photo = update.message.photo[-1]  # Берем последнюю фотографию (наибольшего разрешения)
-    context.user_data['photo'] = photo  # Сохраняем фото в user_data для дальнейшего использования
-    
-    await update.message.reply_text("Теперь, пожалуйста, отправьте свой номер телефона.")
-    return PHONE
 
-# Обработка номера телефона
-async def ask_location(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    phone_number = update.message.text
-    context.user_data['phone'] = phone_number  # Сохраняем номер телефона
-    
-    # Кнопка для отправки локации
-    keyboard = [[telegram.KeyboardButton("Отправить локацию", request_location=True)]]
-    reply_markup = telegram.ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
-    
-    await update.message.reply_text("Пожалуйста, отправьте свою локацию.", reply_markup=reply_markup)
-    return LOCATION
-
-# Обработка локации
-async def ask_price(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    location = update.message.location
-    context.user_data['location'] = location  # Сохраняем локацию
-    
-    await update.message.reply_text("Укажите примерную цену аренды, например: 100-200$.")
-    return PRICE
-
-# Обработка цены
-async def end_conversation(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    price = update.message.text
-    context.user_data['price'] = price  # Сохраняем цену
-    
-    # Выводим собранную информацию
-    msg = (
-        "Спасибо! Вот ваши данные:\n"
-        f"Фото: {context.user_data['photo'].file_id}\n"
-        f"Телефон: {context.user_data['phone']}\n"
-        f"Локация: {context.user_data['location'].latitude}, {context.user_data['location'].longitude}\n"
-        f"Цена: {context.user_data['price']}"
-    )
-    await update.message.reply_text(msg)
-    
-    return ConversationHandler.END
-
-# Обработчик выхода из диалога
-async def cancel(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Диалог был завершен.")
-    return ConversationHandler.END
-
-# Создаем обработчик разговора
-conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('start_renter', start_renter_conversation)],
-    states={
-        PHOTO: [MessageHandler(filters.PHOTO, ask_phone)],
-        PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_location)],
-        LOCATION: [MessageHandler(filters.LOCATION, ask_price)],
-        PRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_conversation)],
-    },
-    fallbacks=[CommandHandler('cancel', cancel)],
-)
-'''
 
 #################
 
@@ -186,6 +134,7 @@ bot = Application.builder().token(configures.RESEARCH_BOT_TOKEN).build()
 # commands
 bot.add_handler(CommandHandler("start", user_register))
 bot.add_handler(CommandHandler("clients", button_client))
+bot.add_handler(CommandHandler("clients", button_renter))
 # inner buttons
 bot.add_handler(CallbackQueryHandler(button_click))
 # get user messages
