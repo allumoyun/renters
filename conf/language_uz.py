@@ -10,5 +10,11 @@ LANGUAGES = {
     'unknown_user': 'Hurmatli foydalanuvchi',
     'for_search': 'Izlash uchun manzil kiriting: ',
     'enter_address': 'Uy manzilini kiriting: ',
-    'location': 'Uy joylashuvini yuboring'
+    'enter_description': 'Uy haqida qisqa ma`lumot kiritiong: ',
+    'enter_location': 'Aniq lokatsiyasini yuboring',
+    'enter_cost': 'Narxini (faqat raqamlar bilan) kiriting',
+    'location': 'Uy joylashuvini yuboring',
+    'enter_ready': 'Rahmat, ma`lumotlar saqlandi.',
+    'unknown_message': 'Valdirama!',
+    'enter_end': 'Tushunmadim!'
 }
