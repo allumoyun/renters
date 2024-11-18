@@ -13,7 +13,10 @@ LANGUAGES = {
     'enter_description': 'Uy haqida qisqa ma`lumot kiritiong: ',
     'enter_location': 'Aniq lokatsiyasini yuboring',
     'enter_cost': 'Narxini (faqat raqamlar bilan) kiriting',
+    'enter_contact': 'Telefon raqamingizni yuboring (pastdagi tugmani bosib)',
+    'contact_button': 'Telefon raqamingiz',
     'location': 'Uy joylashuvini yuboring',
+    'photos': 'rasmnlarni yuklang',
     'enter_ready': 'Rahmat, ma`lumotlar saqlandi.',
     'unknown_message': 'Valdirama!',
     'enter_end': 'Tushunmadim!'

@@ -104,17 +104,20 @@ async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TY
 async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
     try: id = str(query.from_user.id)
     except: id = str(query.message.from_user.id)
-    saved = True
-    ready = False
+    # elif NOTICE[id][len(NOTICE[id])-1]["question"] == "photos":
+    #     NOTICE[id][len(NOTICE[id])-1]["photos"] = query.message.photo
     if NOTICE.get(id) and query.message.location and NOTICE[id][len(NOTICE[id])-1]["question"] == 'location':
         latitude = query.message.location.latitude
         longitude = query.message.location.longitude
-        NOTICE[id][len(NOTICE[id])-1]["location"] = f"({latitude}, {longitude})"
+        NOTICE[id][len(NOTICE[id])-1]["location"] = f"{latitude};{longitude}"
         NOTICE[id][len(NOTICE[id])-1]["question"] = "cost"
+    elif NOTICE.get(id) and query.message.contact:
+        if NOTICE[id][len(NOTICE[id])-1]["question"] == 'contact':
+            NOTICE[id][len(NOTICE[id])-1]["contact"] = query.message.contact.phone_number
+            NOTICE[id][len(NOTICE[id])-1]["question"] = 'ready'
+            with open("conf/advertisement.py", "w", encoding="utf-8") as file: 
+                file.write('notices = ' + json.dumps(NOTICE, indent=4))
     elif NOTICE.get(id) and query.message.text: 
-        if NOTICE[id][len(NOTICE[id])-1]["question"] == 'ready':
-            NOTICE[id][len(NOTICE[id])-1]["question"] = 'end'
-            ready = True
         if NOTICE[id][len(NOTICE[id])-1]["question"] == 'address':
             NOTICE[id][len(NOTICE[id])-1]["address"] = query.message.text
             NOTICE[id][len(NOTICE[id])-1]["question"] = "description"
@@ -124,14 +127,13 @@ async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYP
         elif NOTICE[id][len(NOTICE[id])-1]["question"] == 'cost':
             if query.message.text.isdigit():
                 NOTICE[id][len(NOTICE[id])-1]["cost"] = query.message.text
-                NOTICE[id][len(NOTICE[id])-1]["question"] = "ready"
-            else: saved = False            
-        else: saved = False
-    else: saved = False
+                NOTICE[id][len(NOTICE[id])-1]["question"] = "contact"                
     print('MESSAGE: ', NOTICE)
-    if ready: await show_message(query, LANG['unknown_message']) 
-    elif saved: await show_message(query, LANG['enter_' + NOTICE[id][len(NOTICE[id])-1]["question"]])
-    else: await button_renter(query, context, NOTICE[id][len(NOTICE[id])-1]["question"]) 
+    keyboard = [ [telegram.KeyboardButton(LANG['contact_button'], request_contact=True)] ]
+    if NOTICE[id][len(NOTICE[id])-1]["question"] == "contact":
+        btn_phone = telegram.ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    else: btn_phone = telegram.ReplyKeyboardRemove()
+    await show_message(query, LANG['enter_' + NOTICE[id][len(NOTICE[id])-1]["question"]], btn_phone)
 
 
 
