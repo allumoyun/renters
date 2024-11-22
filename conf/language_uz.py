@@ -19,5 +19,6 @@ LANGUAGES = {
     'photos': 'rasmnlarni yuklang',
     'enter_ready': 'Rahmat, ma`lumotlar saqlandi.',
     'unknown_message': 'Valdirama!',
-    'enter_end': 'Tushunmadim!'
+    'enter_end': 'Tushunmadim!',
+    'for_search_text': 'Izlash uchun matn kiriting'
 }

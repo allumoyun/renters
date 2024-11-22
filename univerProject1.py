@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys, time, json
+import os, sys, time, json
 import importlib
 
-sys.path.append('conf/')
+sys.path.append(os.path.dirname(__file__) + '/conf/')
 
 import configures 
 import telegram_users 
 CLIENT = telegram_users.clients
 import advertisement
 NOTICE = advertisement.notices
-
+FOR_SEARCH = False
 # apt install python3-pip
 # pip install python-telegram-bot==21.6 --break-system-packages
 
 import telegram  # type: ignore
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler, CallbackQueryHandler # type: ignore
+from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, CallbackQueryHandler # type: ignore
 
 import language_uz
 LANG = language_uz.LANGUAGES
@@ -40,7 +40,8 @@ async def button_click(update: telegram.Update, context):
         lang_module = importlib.import_module(button_name)  # Импортируем модуль
         LANG = lang_module.LANGUAGES
         CLIENT[str(id)] = {"name": name, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "lang": button_name[9:]}
-        with open("conf/telegram_users.py", "w", encoding="utf-8") as file: file.write('clients = ' + json.dumps(CLIENT, indent=4))
+        with open(os.path.dirname(__file__) + "/conf/telegram_users.py", "w", encoding="utf-8") as file: 
+            file.write('clients = ' + json.dumps(CLIENT, indent=4))
         await choose_action(query, context)
     # await query.edit_message_text(LANG['bir_narsa'] + f" {button_name}")
 
@@ -70,6 +71,13 @@ async def show_message(update, msg, btn=None):
         await update.message.reply_text(msg, reply_markup=btn)
 
 
+async def show_notice(update, obj, btn=None):
+    xy = obj['location'].split(';')
+    await update.message.reply_location(latitude=xy[0], longitude=xy[1])
+    msg = '🏡 %s\n💵 <b>%s</b>$    ☎️ +%s' % (obj['address'], obj['cost'], obj['contact'])
+    await update.message.reply_text(msg, parse_mode="HTML", reply_markup=btn)
+
+
 async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
@@ -83,9 +91,21 @@ async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_T
 
 
 async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-
-    msg01 = LANG['for_search']
-    await show_message(update, msg01)
+    global FOR_SEARCH
+    if FOR_SEARCH: 
+        el = {
+                "question": "ready",
+                "address": "Adress  sdsdsd skjds kjd skjd",
+                "description": "Juda azon",
+                "location": "41.349792;69.247622",
+                "cost": "4474",
+                "contact": "998993730982"
+        }
+        FOR_SEARCH = False
+        await show_notice(update, el)
+    else:
+        FOR_SEARCH = True
+        await show_message(update, LANG['for_search_text'])
 
 
 async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE, question="address"):
@@ -102,6 +122,8 @@ async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TY
 
 
 async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
+    global FOR_SEARCH
+    if FOR_SEARCH: await button_client(query, context)
     try: id = str(query.from_user.id)
     except: id = str(query.message.from_user.id)
     # elif NOTICE[id][len(NOTICE[id])-1]["question"] == "photos":
@@ -115,7 +137,7 @@ async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYP
         if NOTICE[id][len(NOTICE[id])-1]["question"] == 'contact':
             NOTICE[id][len(NOTICE[id])-1]["contact"] = query.message.contact.phone_number
             NOTICE[id][len(NOTICE[id])-1]["question"] = 'ready'
-            with open("conf/advertisement.py", "w", encoding="utf-8") as file: 
+            with open(os.path.dirname(__file__) + "/conf/advertisement.py", "w", encoding="utf-8") as file: 
                 file.write('notices = ' + json.dumps(NOTICE, indent=4))
     elif NOTICE.get(id) and query.message.text: 
         if NOTICE[id][len(NOTICE[id])-1]["question"] == 'address':

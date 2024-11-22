@@ -2,8 +2,8 @@ notices = {
     "774328486": [
         {
             "question": "ready",
-            "address": "Ycydyf",
-            "description": "Utdtisit",
+            "address": "Adress  sdsdsd skjds kjd skjd",
+            "description": "Juda azon",
             "location": "41.349792;69.247622",
             "cost": "4474",
             "contact": "998993730982"
