@@ -12,5 +12,10 @@ clients = {
         "name": "Javlon ABDULLO",
         "time": "2024-11-22 23:47:11",
         "lang": "uz"
+    },
+    "6721042235": {
+        "name": "Mardona ",
+        "time": "2024-11-27 23:06:41",
+        "lang": "uz"
     }
 }

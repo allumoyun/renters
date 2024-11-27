@@ -94,8 +94,7 @@ async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_T
         ]
     ]
     buttons = telegram.InlineKeyboardMarkup(keyboard)
-    msg = LANG['bir_narsa']
-    await show_message(update, msg, buttons)
+    await show_message(update, LANG['choose_action'], buttons)
 
 
 async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
@@ -112,10 +111,11 @@ async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_T
                 if all(elem in note for elem in txt):
                     finded.append(i)
                     print(txt, '-------->', json.dumps(i, indent=4))
-        FOR_SEARCH = False
-        NOTICE[id][len(NOTICE[id])-1]["question"] = "founded" if len(finded) > 0 else 'not_found'
         for i in finded:
             await show_notice(update, i)
+        FOR_SEARCH = False
+        if NOTICE.get(id):
+            NOTICE[id][len(NOTICE[id])-1]["question"] = "founded" if len(finded) > 0 else 'not_found'
     else:
         FOR_SEARCH = True
         await show_message(update, LANG['for_search_text'])
@@ -135,11 +135,10 @@ async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TY
 
 async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
     global FOR_SEARCH
-    if FOR_SEARCH: await button_client(query, context)
-    try: id = str(query.from_user.id)
-    except: id = str(query.message.from_user.id)
-    # elif NOTICE[id][len(NOTICE[id])-1]["question"] == "photos":
-    #     NOTICE[id][len(NOTICE[id])-1]["photos"] = query.message.photo
+    if FOR_SEARCH: 
+        await button_client(query, context)
+        return
+    id = get_id(query)
     if NOTICE.get(id) and query.message.location and NOTICE[id][len(NOTICE[id])-1]["question"] == 'location':
         latitude = query.message.location.latitude
         longitude = query.message.location.longitude
