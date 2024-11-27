@@ -7,5 +7,18 @@ LANGUAGES = {
     'lang_uz': "O'zbekcha",
     'lang_ru': "Русский", 
     'lang_en': "English", 
-    'unknown_user': 'Dear user'
+    'unknown_user': 'Dear user',
+    'for_search': 'enter text for search: ',
+    'enter_address': 'enter address: ',
+    'enter_description': 'brief information about home: ',
+    'enter_location': 'send location',
+    'enter_cost': 'cost(only numbers)',
+    'enter_contact': 'telephone number (press button in below)',
+    'contact_button': 'telephone number',
+    'location': 'send home location',
+    'photos': 'send photos',
+    'enter_ready': 'thank you, information saved.',
+    'unknown_message': 'error!',
+    'enter_end': 'not understand!',
+    'for_search_text': 'enter text for searching'
 }

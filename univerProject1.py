@@ -11,6 +11,7 @@ import telegram_users
 CLIENT = telegram_users.clients
 import advertisement
 NOTICE = advertisement.notices
+LIMITS = 2
 FOR_SEARCH = False
 # apt install python3-pip
 # pip install python-telegram-bot==21.6 --break-system-packages
@@ -23,11 +24,16 @@ LANG = language_uz.LANGUAGES
 
 
 
+def get_id(obj):
+    try: id = str(obj.from_user.id)
+    except: id = str(obj.message.from_user.id)
+    return id
+
 # Функция, которая вызывается при нажатии на кнопку
 async def button_click(update: telegram.Update, context):
     query = update.callback_query
     await query.answer()  # Обязательный метод для Telegram
-    id = query.from_user.id
+    id = get_id(query)
     name = '%s %s' % (query.from_user.first_name, query.from_user.last_name)
     name = name.replace('None', '')
     if len(name) < 3: name = LANG['unknown_user']
@@ -72,10 +78,12 @@ async def show_message(update, msg, btn=None):
 
 
 async def show_notice(update, obj, btn=None):
+    await update.message.reply_text('<b>%s</b>' % obj['description'], parse_mode="HTML")
     xy = obj['location'].split(';')
     await update.message.reply_location(latitude=xy[0], longitude=xy[1])
     msg = '🏡 %s\n💵 <b>%s</b>$    ☎️ +%s' % (obj['address'], obj['cost'], obj['contact'])
     await update.message.reply_text(msg, parse_mode="HTML", reply_markup=btn)
+    time.sleep(1)
 
 
 async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
@@ -91,26 +99,30 @@ async def choose_action(update: telegram.Update, context: ContextTypes.DEFAULT_T
 
 
 async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_TYPE):
-    global FOR_SEARCH
+    global FOR_SEARCH, LIMITS            
     if FOR_SEARCH: 
-        el = {
-                "question": "ready",
-                "address": "Adress  sdsdsd skjds kjd skjd",
-                "description": "Juda azon",
-                "location": "41.349792;69.247622",
-                "cost": "4474",
-                "contact": "998993730982"
-        }
+        finded = []
+        txt = update.message.text.lower().split(' ')
+        id = get_id(update)
+        for u in NOTICE.values():
+            if len(finded) >= LIMITS: break
+            for i in u:
+                if len(finded) >= LIMITS: break
+                note = (i['description'] + ' ' + i['address']).lower().split(' ')
+                if all(elem in note for elem in txt):
+                    finded.append(i)
+                    print(txt, '-------->', json.dumps(i, indent=4))
         FOR_SEARCH = False
-        await show_notice(update, el)
+        NOTICE[id][len(NOTICE[id])-1]["question"] = "founded" if len(finded) > 0 else 'not_found'
+        for i in finded:
+            await show_notice(update, i)
     else:
         FOR_SEARCH = True
         await show_message(update, LANG['for_search_text'])
-
+    
 
 async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TYPE, question="address"):
-    try: id = str(query.from_user.id)
-    except: id = str(query.message.from_user.id)
+    id = get_id(query)
     elm = {"question": question}
     if NOTICE.get(id): 
         if question == "address": NOTICE[id].append(elm)
@@ -150,7 +162,7 @@ async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYP
             if query.message.text.isdigit():
                 NOTICE[id][len(NOTICE[id])-1]["cost"] = query.message.text
                 NOTICE[id][len(NOTICE[id])-1]["question"] = "contact"                
-    print('MESSAGE: ', NOTICE)
+    # print('MESSAGE: ', NOTICE)
     keyboard = [ [telegram.KeyboardButton(LANG['contact_button'], request_contact=True)] ]
     if NOTICE[id][len(NOTICE[id])-1]["question"] == "contact":
         btn_phone = telegram.ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
