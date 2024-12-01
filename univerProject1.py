@@ -29,11 +29,22 @@ def get_id(obj):
     except: id = str(obj.message.from_user.id)
     return id
 
+def set_lang(update, language=None):
+    global LANG
+    if not language:
+        language = 'uz'
+        id = get_id(update)
+        if id and CLIENT.get(id): language = CLIENT[id].get('lang', 'uz')
+    lang_module = importlib.import_module('language_' + language)
+    LANG = lang_module.LANGUAGES
+
+
 # Функция, которая вызывается при нажатии на кнопку
 async def button_click(update: telegram.Update, context):
     query = update.callback_query
     await query.answer()  # Обязательный метод для Telegram
     id = get_id(query)
+    set_lang(query)    
     name = '%s %s' % (query.from_user.first_name, query.from_user.last_name)
     name = name.replace('None', '')
     if len(name) < 3: name = LANG['unknown_user']
@@ -42,12 +53,11 @@ async def button_click(update: telegram.Update, context):
         await button_client(query, context)
     elif button_name == 'button_renter':
         await button_renter(query, context)
-    else:
-        lang_module = importlib.import_module(button_name)  # Импортируем модуль
-        LANG = lang_module.LANGUAGES
-        CLIENT[str(id)] = {"name": name, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "lang": button_name[9:]}
+    else:           # save User data
+        CLIENT[id] = {"name": name, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "lang": button_name[9:]}
         with open(os.path.dirname(__file__) + "/conf/telegram_users.py", "w", encoding="utf-8") as file: 
             file.write('clients = ' + json.dumps(CLIENT, indent=4))
+        set_lang(update, button_name[9:])
         await choose_action(query, context)
     # await query.edit_message_text(LANG['bir_narsa'] + f" {button_name}")
 
@@ -78,10 +88,11 @@ async def show_message(update, msg, btn=None):
 
 
 async def show_notice(update, obj, btn=None):
-    await update.message.reply_text('<b>%s</b>' % obj['description'], parse_mode="HTML")
-    xy = obj['location'].split(';')
-    await update.message.reply_location(latitude=xy[0], longitude=xy[1])
-    msg = '🏡 %s\n💵 <b>%s</b>$    ☎️ +%s' % (obj['address'], obj['cost'], obj['contact'])
+    await update.message.reply_text('<b>%s</b>' % obj.get('description', '---'), parse_mode="HTML")
+    if obj.get('location'):
+        xy = obj['location'].split(';')
+        await update.message.reply_location(latitude=xy[0], longitude=xy[1])
+    msg = '🏡 %s\n💵 <b>%s</b>$    ☎️ +%s' % (obj.get('address', '-'), obj.get('cost', '0'), obj.get('contact', ''))
     await update.message.reply_text(msg, parse_mode="HTML", reply_markup=btn)
     time.sleep(1)
 
@@ -107,15 +118,16 @@ async def button_client(update: telegram.Update, context: ContextTypes.DEFAULT_T
             if len(finded) >= LIMITS: break
             for i in u:
                 if len(finded) >= LIMITS: break
-                note = (i['description'] + ' ' + i['address']).lower().split(' ')
+                note = (i.get('description', '') + ' ' + i.get('address', '')).lower().split(' ')
                 if all(elem in note for elem in txt):
                     finded.append(i)
-                    print(txt, '-------->', json.dumps(i, indent=4))
+                    # print(txt, '-------->', json.dumps(i, indent=4))
         for i in finded:
             await show_notice(update, i)
         FOR_SEARCH = False
         if NOTICE.get(id):
             NOTICE[id][len(NOTICE[id])-1]["question"] = "founded" if len(finded) > 0 else 'not_found'
+            await user_message(update, context)
     else:
         FOR_SEARCH = True
         await show_message(update, LANG['for_search_text'])
@@ -127,7 +139,7 @@ async def button_renter(query: telegram.Update, context: ContextTypes.DEFAULT_TY
     if NOTICE.get(id): 
         if question == "address": NOTICE[id].append(elm)
     else: NOTICE[id] = [elm]
-    print('BUTTON RENTER: ', NOTICE)
+    # print('BUTTON RENTER: ', NOTICE)
     await show_message(query, LANG['enter_' + question])
 
 # Обработчик для получения ответа от кнопок
@@ -167,7 +179,9 @@ async def user_message(query: telegram.Update, context: ContextTypes.DEFAULT_TYP
         btn_phone = telegram.ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     else: btn_phone = telegram.ReplyKeyboardRemove()
     await show_message(query, LANG['enter_' + NOTICE[id][len(NOTICE[id])-1]["question"]], btn_phone)
-
+    if NOTICE[id][len(NOTICE[id])-1]["question"] in ['ready', 'not_found', 'founded']:        
+        time.sleep(1)
+        await choose_action(query, context)
 
 
 

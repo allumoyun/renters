@@ -37,7 +37,7 @@ notices = {
             "address": "Chorsu",
             "description": "Bozor, bekat",
             "location": "41.350462;69.24793",
-            "cost": "149",
+            "cost": "200",
             "contact": "998993730982"
         },
         {
@@ -74,14 +74,6 @@ notices = {
         },
         {
             "question": "ready",
-            "address": "chorsu",
-            "description": "OdAmLar",
-            "location": "41.349747;69.242345",
-            "cost": "492",
-            "contact": "998993730982"
-        },
-        {
-            "question": "ready",
             "address": "olmazor, Qoraqamish, bozor",
             "description": "olmazor, Qoraqamish, bozor, dokon",
             "location": "41.349747;69.242345",
@@ -90,18 +82,57 @@ notices = {
         },
         {
             "question": "ready",
-            "address": "Chorsu bozor",
-            "description": "Arzon, katta, shinam",
-            "location": "41.349747;69.242345",
-            "cost": "572",
-            "contact": "998993730982"
-        },
-        {
-            "question": "ready",
             "address": "\u0427\u043e\u0440\u0441\u0443",
             "description": "\u0410\u0440\u0437\u043e\u043d, \u0437\u043e\u0440,  \u0431\u043e\u0437\u043e\u0440",
             "location": "41.349747;69.242345",
             "cost": "297",
+            "contact": "998993730982"
+        },
+        {
+            "question": "description",
+            "address": "\u0427\u043e\u0440\u0441\u0443"
+        },
+        {
+            "question": "ready",
+            "address": "\u041b\u0432\u0434\u0443\u0432",
+            "description": "\u0410\u043e\u0432\u043e\u043b\u0432",
+            "location": "41.34995;69.231125",
+            "cost": "298",
+            "contact": "998993730982"
+        },
+        {
+            "question": "ready",
+            "address": "Turin",
+            "description": "Oqish",
+            "location": "41.34995;69.231125",
+            "cost": "150",
+            "contact": "998993730982"
+        },
+        {
+            "question": "founded",
+            "address": "Chorsu",
+            "description": "Bozor, bekat",
+            "location": "41.34995;69.231125",
+            "cost": "200",
+            "contact": "998993730982"
+        },
+        {
+            "question": "founded",
+            "address": "Toshkent",
+            "description": "Ahdhdowk",
+            "location": "41.350445;69.247357",
+            "cost": "3950",
+            "contact": "998993730982"
+        },
+        {
+            "question": "not_found"
+        },
+        {
+            "question": "ready",
+            "address": "AliXonBobo",
+            "description": "joy",
+            "location": "41.350445;69.247357",
+            "cost": "246",
             "contact": "998993730982"
         }
     ],

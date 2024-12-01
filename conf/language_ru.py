@@ -1,9 +1,9 @@
 LANGUAGES = {
-    'hello': 'Пртвет!',
-    'renter': 'русча beruvchi',
-    'client': 'Кдиент',
+    'hello': 'Привет!',
+    'renter': 'Сдать аренды',
+    'client': 'Поиск объявления',
     'choose_lang': 'Выберите язык:',
-    'bir_narsa': 'вы выбрали русский',
+    'choose_action': 'вы выбрали русский',
     'lang_uz': "O'zbekcha",
     'lang_ru': "Русский", 
     'lang_en': "English", 
@@ -20,5 +20,7 @@ LANGUAGES = {
     'enter_ready': 'спасибо, информация сохранена.',
     'unknown_message': 'ошибка!',
     'enter_end': 'не понял!',
-    'for_search_text': 'введите тескт для поиска'
+    'for_search_text': 'введите тескт для поиска',
+    'enter_founded': 'найденные объявления выведены.',
+    'enter_not_found': 'ничего не найдено по запросу.'
 }

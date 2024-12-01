@@ -3,7 +3,7 @@ LANGUAGES = {
     'renter': 'renter',
     'client': 'client',
     'choose_lang': 'choose language: ',
-    'bir_narsa': 'you choose english',
+    'choose_action': 'you choose english',
     'lang_uz': "O'zbekcha",
     'lang_ru': "Русский", 
     'lang_en': "English", 
@@ -20,5 +20,7 @@ LANGUAGES = {
     'enter_ready': 'thank you, information saved.',
     'unknown_message': 'error!',
     'enter_end': 'not understand!',
-    'for_search_text': 'enter text for searching'
+    'for_search_text': 'enter text for searching',
+    'enter_founded': 'finded advertisements showed.',
+    'enter_not_found': 'nothing founded on request.',
 }

@@ -1,12 +1,12 @@
 LANGUAGES = {
     'hello': 'Salom!',
-    'renter': 'Ijera beruvchi',
-    'client': 'Klient',
+    'renter': 'E’lon berish',
+    'client': 'E’lon izlash',
     'choose_lang': 'Tilni tanlang: ',
     'choose_action': 'Quyidagi amallardan birini tanlang:',
-    'lang_uz': "🇺🇿 O'zbekcha",
-    'lang_ru': "🇷🇺 Русский", 
-    'lang_en': "🇬🇧 English", 
+    'lang_uz': "O'zbekcha",
+    'lang_ru': "Русский", 
+    'lang_en': "English", 
     'unknown_user': 'Hurmatli foydalanuvchi',
     'for_search': 'Izlash uchun manzil kiriting: ',
     'enter_address': 'Uy manzilini kiriting: ',
@@ -23,4 +23,4 @@ LANGUAGES = {
     'for_search_text': 'Izlash uchun matn kiriting',
     'enter_founded': 'Topilgan e`lonlar chiqarildi.',
     'enter_not_found': 'So`rov bo`yicha topilmadi.'
-}
+}   
