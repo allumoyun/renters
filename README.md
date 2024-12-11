@@ -11,6 +11,6 @@
 # for running code you should have linux and installed pip on it
 # also recommend python version 21.6
 # you can check the result:
-@house_research_bot
+# @house_research_bot
 
 
