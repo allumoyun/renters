@@ -1,16 +1,52 @@
-# HOUSE-RENTER
+House-Renter Bot
 
-# this letegram bot has only 2 functions:
-# give announce: give house for rent
-# search announce: search and get house for rent
+House-Renter is a Telegram bot designed to streamline the process of renting houses. It provides two main functionalities:
 
+Features
 
-# for give announce you should give address of house, some information about it, location, cost and telephone number, so that customers can contact you
-# for search announce you should only write address where you want house 
+Post a House for Rent:
 
-# for running code you should have linux and installed pip on it
-# also recommend python version 21.6
-# you can check the result:
-# @house_research_bot
+Provide the address of the house.
 
+Add details about the property (e.g., number of rooms, amenities).
+
+Share the exact location (via Telegram location feature).
+
+Set the rental price.
+
+Include your contact phone number so potential renters can reach you directly.
+
+Search for a House to Rent:
+
+Enter the desired location or address.
+
+The bot will return relevant rental listings matching your query.
+
+Requirements
+
+To run this bot, ensure you have the following:
+
+Linux operating system.
+
+pip (Python package manager) installed.
+
+Python 3.6 or later (recommended version: Python 3.9).
+
+Usage
+
+Clone this repository to your local machine.
+
+Install required dependencies using:
+
+pip install -r requirements.txt
+
+Start the bot by running:
+
+python bot.py
+
+Try It Out
+
+You can check the live bot here: @house_research_bot
+
+Feel free to contribute or suggest improvements!
 
