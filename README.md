@@ -1,8 +1,8 @@
-#House-Renter Bot
+# House-Renter Bot
 
 House-Renter is a Telegram bot designed to streamline the process of renting houses. It provides two main functionalities:
 
-#Features
+# Features
 
 1. Post a House for Rent:
 
@@ -22,7 +22,7 @@ House-Renter is a Telegram bot designed to streamline the process of renting hou
   
  * The bot will return relevant rental listings matching your query.
 
-#Requirements
+# Requirements
 
 To run this bot, ensure you have the following:
 
@@ -32,7 +32,7 @@ To run this bot, ensure you have the following:
   
  * Python 3.6 or later (recommended version: Python 3.9).
 
-#Usage
+# Usage
 
 1. Clone this repository to your local machine.
 
