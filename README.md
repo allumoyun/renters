@@ -37,12 +37,12 @@ To run this bot, ensure you have the following:
 1. **Clone this repository to your local machine.**
 
 2. **Install required dependencies using:**
-```bash
-pip install -r requirements.txt
+
+```pip install -r requirements.txt```
 
 3. **Start the bot by running:**
-```bash
-python bot.py
+
+```python bot.py```
 
 # Try It Out
 
