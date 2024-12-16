@@ -18,19 +18,19 @@ House-Renter is a Telegram bot designed to streamline the process of renting hou
 
 2. Search for a House to Rent:
 
-  Enter the desired location or address.
+ * Enter the desired location or address.
   
-  The bot will return relevant rental listings matching your query.
+ * The bot will return relevant rental listings matching your query.
 
 #Requirements
 
 To run this bot, ensure you have the following:
 
-  Linux operating system.
+ * Linux operating system.
   
-  pip (Python package manager) installed.
+ * pip (Python package manager) installed.
   
-  Python 3.6 or later (recommended version: Python 3.9).
+ * Python 3.6 or later (recommended version: Python 3.9).
 
 #Usage
 
