@@ -38,11 +38,11 @@ To run this bot, ensure you have the following:
 
 2. **Install required dependencies using:**
 
-```pip install -r requirements.txt```
+    ```pip install -r requirements.txt```
 
 3. **Start the bot by running:**
 
-```python bot.py```
+    ```python bot.py```
 
 # Try It Out
 
